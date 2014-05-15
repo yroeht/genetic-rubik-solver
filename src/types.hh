@@ -32,4 +32,6 @@ typedef std::vector<std::vector<Color>> Face;
 
 typedef std::list<Move> Sequence;
 
+typedef unsigned Score;
+
 #endif /* TYPES_HH */

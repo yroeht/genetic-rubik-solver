@@ -1,4 +1,5 @@
 #include <cube.hh>
+#include <fitness.hh>
 #include <format.hh>
 #include <output.hh>
 #include <scrambler.hh>
@@ -9,11 +10,11 @@
 
 int main()
 {
-  Cube c;
   do {
+      Cube c;
       std::cout << Format::CLEAR;
 
-      unsigned scramble_length = 20;
+      unsigned scramble_length = 5;
 
       std::cout << "** Generating "
         << scramble_length
@@ -27,7 +28,9 @@ int main()
       std::cout << std::endl
         << "Scramble (2-GEN - reduced): " << s
         << std::endl
+        << "Fitness will be: " << Fitness::evaluate(s, c)
         << std::endl
+        << c
         << std::endl;
 
       c.rotate(s);
@@ -35,8 +38,9 @@ int main()
       std::cout << "** Applying scramble **"
         << std::endl
         << std::endl
-        << std::endl
         << c
+        << std::endl
+        << "Fitness: " << Fitness::evaluate(*new Sequence, c)
         << std::endl;
 
 #if 0

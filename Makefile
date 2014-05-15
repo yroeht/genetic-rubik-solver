@@ -4,6 +4,7 @@ PRG=toy
 
 SOURCE = $(addprefix src/,	\
 	 cube.cc 		\
+	 fitness.cc		\
 	 format.cc 		\
 	 main.cc 		\
 	 output.cc 		\

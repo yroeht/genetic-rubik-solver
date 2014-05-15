@@ -12,6 +12,11 @@ namespace Format
   std::string CubePrinter3D(const Cube c);
 }
 
+namespace Fitness
+{
+  Score evaluate(const Sequence seq, const Cube cu);
+}
+
 class Cube
 {
 private:
@@ -30,6 +35,7 @@ public:
   void show_face(std::ostream& os, Side s);
   friend std::ostream& operator<<(std::ostream& os, const Cube c);
   friend std::string Format::CubePrinter3D(const Cube c);
+  friend Score Fitness::evaluate(const Sequence seq, const Cube cu);
 };
 
 #endif /* CUBE_HH */
