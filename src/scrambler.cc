@@ -24,7 +24,9 @@ Scrambler::scramble(unsigned length)
                     while (r != static_cast<int>(ROT_UP)
                            && r != static_cast<int>(ROT_UP_I)
                            && r != static_cast<int>(ROT_RIGHT)
-                           && r != static_cast<int>(ROT_RIGHT_I))
+                           && r != static_cast<int>(ROT_RIGHT_I)
+                           && r != static_cast<int>(ROT_FRONT)
+                           && r != static_cast<int>(ROT_FRONT_I))
                       r = rnd();
                     return static_cast<Move>(r);
                 });

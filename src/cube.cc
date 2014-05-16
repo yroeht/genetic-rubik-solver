@@ -129,7 +129,55 @@ Cube::rotate(Move m)
         }
       break;
 
-      case ROT_FRONT: assert(false); break;
+      case ROT_FRONT:
+        {
+          Color swp;
+
+          /* ********* */
+          /* The Slice */
+          /* ********* */
+
+          /* Corners (FR orbit) */
+          swp = top[2][2];
+          top[2][2] = left[0][2];
+          left[0][2] = bottom[0][0];
+          bottom[0][0] = right[2][0];
+          right[2][0] = swp;
+
+          /* Corners (FL orbit) */
+          swp = top[2][0];
+          top[2][0] = left[2][2];
+          left[2][2] = bottom[0][2];
+          bottom[0][2] = right[0][0];
+          right[0][0] = swp;
+
+          /* Edges */
+          swp = top[2][1];
+          top[2][1] = left[1][2];
+          left[1][2] = bottom[0][1];
+          bottom[0][1] = right[1][0];
+          right[1][0] = swp;
+
+          /* ******** */
+          /* The Face */
+          /* ******** */
+
+
+          /* Corners */
+          swp = front[0][0];
+          front[0][0] = front[2][0];
+          front[2][0] = front[2][2];
+          front[2][2] = front[0][2];
+          front[0][2] = swp;
+
+          /* Edges */
+          swp = front[0][1];
+          front[0][1] = front[1][0];
+          front[1][0] = front[2][1];
+          front[2][1] = front[1][2];
+          front[1][2] = swp;
+        }
+      break;
       case ROT_BACK: assert(false); break;
 
       case ROT_UP_I:
