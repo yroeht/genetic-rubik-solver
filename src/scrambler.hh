@@ -6,6 +6,7 @@
 class Scrambler
 {
 public:
+  static Move invert(Move m);
   static Sequence scramble(unsigned length);
   static Sequence reduce(const Sequence s);
 };

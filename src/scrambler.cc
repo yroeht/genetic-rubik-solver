@@ -1,44 +1,71 @@
 #include <scrambler.hh>
 
 #include <algorithm>
-#include <cassert>
 #include <chrono>
 #include <functional>
 #include <random>
 
+Move
+Scrambler::invert(Move m)
+{
+  /* Even rotation values are direct (e.g. U). */
+  auto i = static_cast<int>(m);
+  if (i % 2 == 0)
+    /* Direct rotation, return an inverse one (e.g. Ui). */
+    return static_cast<Move>(i + 1);
+  else
+    /* Inverse rotation, return a direct one (e.g. U). */
+    return static_cast<Move>(i - 1);
+}
+
 Sequence
 Scrambler::scramble(unsigned length)
 {
-  Sequence* ret = new Sequence(length);
+  std::vector<Move> p;
+  p.push_back(ROT_UP);
+  p.push_back(ROT_UP_I);
+  p.push_back(ROT_FRONT);
+  p.push_back(ROT_FRONT_I);
+  p.push_back(ROT_RIGHT);
+  p.push_back(ROT_RIGHT_I);
+
   long seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine e (seed);
-  std::uniform_int_distribution<> d(0, 12);
-  std::function<int()> rnd = std::bind(d, e);
+  std::uniform_int_distribution<> d(0, static_cast<int>(p.size()) - 1);
+  std::function<unsigned()> rnd = std::bind(d, e);
 
-  std::generate(ret->begin(), ret->end(),
-#if 0 // Uses all moves
-                [rnd]() -> Move { return static_cast<Move>(rnd()); });
-#else // Uses only U, Ui, R, and Ri, which are implemented.
-                [rnd]() -> Move {
-                    auto r = rnd();
-                    while (r != static_cast<int>(ROT_UP)
-                           && r != static_cast<int>(ROT_UP_I)
-                           && r != static_cast<int>(ROT_RIGHT)
-                           && r != static_cast<int>(ROT_RIGHT_I)
-                           && r != static_cast<int>(ROT_FRONT)
-                           && r != static_cast<int>(ROT_FRONT_I))
-                      r = rnd();
-                    return static_cast<Move>(r);
-                });
-#endif
-  return *ret;
+  Sequence s;
+  Move r = ROT_UP;
+  Move forb1 = ROT_UP, forb2 = ROT_UP;
+  while (s.size() < length)
+    {
+      do {
+          r = p[rnd()];
+      } while (r == forb1 || r == forb2);
+      if (r == ROT_UP || r == ROT_UP_I)
+        {
+          forb1 = ROT_UP;
+          forb2 = ROT_UP_I;
+        }
+      else if (r == ROT_FRONT || r == ROT_FRONT_I)
+        {
+          forb1 = ROT_FRONT;
+          forb2 = ROT_FRONT_I;
+        }
+      else // if (r == ROT_RIGHT)
+        {
+          forb1 = ROT_RIGHT;
+          forb2 = ROT_RIGHT_I;
+        }
+      s.push_back(r);
+    }
+  return s;
 }
 
 Sequence
 Scrambler::reduce(const Sequence s)
 {
   Sequence ret;
-  assert(!s.empty());
 
   for (auto rotation : s)
     {
@@ -48,25 +75,19 @@ Scrambler::reduce(const Sequence s)
       else
         {
           auto last = ret.back();
-          if ((static_cast<int>(last) % 2 == 0
-               && static_cast<int>(rotation) == static_cast<int>(last) + 1)
-              || (static_cast<int>(last) % 2 == 1
-                  && static_cast<int>(rotation) == static_cast<int>(last) - 1))
+          if (static_cast<int>(last) == static_cast<int>(invert(rotation)))
             /* The previous rotation is cancelled by the current one, so cancel
             ** that previous one and go on. */
             ret.pop_back();
           else if (ret.size() > 1
-                   && last == *std::prev(ret.end(), 1)
-                   && last == *std::prev(ret.end(), 2))
+                   && rotation == *std::prev(ret.end(), 1)
+                   && rotation == *std::prev(ret.end(), 2))
             /* The current rotation is the third of its kind. A single inverse
             ** one would be better. */
             {
               ret.pop_back();
               ret.pop_back();
-              if (static_cast<int>(last) % 2 == 0)
-                ret.push_back(static_cast<Move>(last + 1));
-              else
-                ret.push_back(static_cast<Move>(last - 1));
+              ret.push_back(invert(rotation));
             }
           else
             /* The current rotation does not cancel the previous rotation. So
