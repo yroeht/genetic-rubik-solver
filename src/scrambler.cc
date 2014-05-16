@@ -48,13 +48,26 @@ Scrambler::reduce(const Sequence s)
       else
         {
           auto last = ret.back();
-          /* The previous rotation is cancelled by the current one, so cancel
-          ** that previous one and go on. */
           if ((static_cast<int>(last) % 2 == 0
                && static_cast<int>(rotation) == static_cast<int>(last) + 1)
               || (static_cast<int>(last) % 2 == 1
                   && static_cast<int>(rotation) == static_cast<int>(last) - 1))
+            /* The previous rotation is cancelled by the current one, so cancel
+            ** that previous one and go on. */
             ret.pop_back();
+          else if (ret.size() > 1
+                   && last == *std::prev(ret.end(), 1)
+                   && last == *std::prev(ret.end(), 2))
+            /* The current rotation is the third of its kind. A single inverse
+            ** one would be better. */
+            {
+              ret.pop_back();
+              ret.pop_back();
+              if (static_cast<int>(last) % 2 == 0)
+                ret.push_back(static_cast<Move>(last + 1));
+              else
+                ret.push_back(static_cast<Move>(last - 1));
+            }
           else
             /* The current rotation does not cancel the previous rotation. So
             ** keep it. */
