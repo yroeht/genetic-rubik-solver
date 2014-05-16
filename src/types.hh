@@ -34,4 +34,8 @@ typedef std::list<Move> Sequence;
 
 typedef unsigned Score;
 
+typedef std::pair<Sequence, Score> Individual;
+
+typedef std::vector<Individual> Population;
+
 #endif /* TYPES_HH */

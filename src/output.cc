@@ -1,7 +1,10 @@
 #include <ascii.hh>
+#include <breeder.hh>
 #include <format.hh>
 #include <output.hh>
+#include <scrambler.hh>
 
+#include <algorithm>
 #include <iterator>
 #include <string>
 #include <sstream>
@@ -63,7 +66,7 @@ std::ostream& operator<<(std::ostream& os, const Cube cu)
 std::ostream& operator<<(std::ostream& os, const Sequence s)
 {
   std::copy(s.begin(), s.end(),
-            std::ostream_iterator<Move>(os, " "));
+            std::ostream_iterator<Move>(os, ""));
   return os;
 }
 
@@ -85,4 +88,17 @@ std::ostream& operator<<(std::ostream& os, const Move m)
     case ROT_BACK_I:    os << "Bi"; break;
     }
   return os;
+}
+
+void Breeder::dump(std::ostream& os)
+{
+  auto first = population.front();
+  os << "Breeder iteration " << iteration
+    << ", population count " << population.size()
+    << ", average fitness " << average() * 100 / 48 << "%"
+    << "."
+    << std::endl;
+  os << "Fittest individual is " << Scrambler::reduce(first.first)
+    << ", scored " << first.second * 100 / 48 << "%"
+    << std::endl;
 }

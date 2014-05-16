@@ -1,3 +1,4 @@
+#include <breeder.hh>
 #include <cube.hh>
 #include <fitness.hh>
 #include <format.hh>
@@ -10,45 +11,73 @@
 
 int main()
 {
+  unsigned scramble_length = 10;
+  unsigned solution_length = 10;
   do {
+      //std::cout << Format::CLEAR;
       Cube c;
-      std::cout << Format::CLEAR;
-
-      unsigned scramble_length = 5;
-
-      std::cout << "** Generating "
-        << scramble_length
-        << " scrambling moves at random. **"
-        << std::endl;
-
+      Breeder b(1000, solution_length, c);
       auto s = Scrambler::scramble(scramble_length);
-      std::cout << std::endl
-        << "Scramble (2-GEN): " << s;
-      s = Scrambler::reduce(s);
-      std::cout << std::endl
-        << "Scramble (2-GEN - reduced): " << s
-        << std::endl
-        << "Fitness will be: " << Fitness::evaluate(s, c)
-        << std::endl
-        << c
-        << std::endl;
 
-      c.rotate(s);
+      /* Scramble */
+        {
+          std::cout << std::endl
+            << "Scramble (2-GEN): " << s;
+          s = Scrambler::reduce(s);
+          std::cout << std::endl;
 
-      std::cout << "** Applying scramble **"
-        << std::endl
-        << std::endl
-        << c
-        << std::endl
-        << "Fitness: " << Fitness::evaluate(*new Sequence, c)
-        << std::endl;
+          c.rotate(s);
 
-#if 0
-      std::chrono::milliseconds duration (500);
-      std::this_thread::sleep_for(duration);
-  } while (true);
-#else
+          std::cout << "** Applying scramble **"
+            << std::endl
+            << c
+            << std::endl
+            << "Fitness: " << Fitness::evaluate(*new Sequence, c)
+            << std::endl
+            << std::endl;
+        }
+
+      b.initial_populate();
+      b.score();
+
+      unsigned fit = 0;
+      do
+        {
+          double duration;
+
+          b.evolve();
+          /* Scoring */
+            {
+              std::clock_t start = std::clock();
+              b.score();
+              duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+            }
+
+          Cube c2(c);
+          c2.rotate(b.best_move());
+
+          if (b.iteration % 10 == 0 || fit == 48)
+            {
+             // std::cout << Format::CLEAR;
+              std::cout << std::endl
+                << "Scramble (2-GEN): " << s
+                << std::endl
+                << "Fitness: " << Fitness::evaluate(*new Sequence, c) * 100 / 48 << "%"
+                << std::endl
+                << c
+                << std::endl;
+
+              fit = Fitness::evaluate(b.best_move(), c);
+
+              b.dump(std::cout);
+              std::cout
+                << "Scoring duration: " << duration
+                << std::endl
+                << "Applying best solution results in:" << std::endl
+                << c2;
+            }
+        } while (fit < 48);
+      b.stop_workers();
   } while (std::cin.ignore());
-#endif
 }
 
