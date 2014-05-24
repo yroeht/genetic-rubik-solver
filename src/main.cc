@@ -40,7 +40,7 @@ int main()
             { return Scrambler::scramble(solution_length); };
 
           auto scorer = [c](const Sequence s) -> unsigned
-            { static Cube cc (c); return Fitness::evaluate(s, cc); };
+            { return Fitness::evaluate(s, c); };
 
           PrintableBreeder<Sequence, unsigned> b(generator, scorer,
                                                  200000, 1.0);
@@ -55,7 +55,6 @@ int main()
 
       /* Show */
         {
-          auto bak(c);
           c.rotate(best_move);
           std::cout << "** Applying best sequence **" << std::endl
             << c << std::endl
