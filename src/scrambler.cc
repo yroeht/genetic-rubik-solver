@@ -21,13 +21,13 @@ Scrambler::invert(Move m)
 Sequence
 Scrambler::scramble(unsigned length)
 {
-  std::vector<Move> p;
-  p.push_back(ROT_UP);
-  p.push_back(ROT_UP_I);
-  p.push_back(ROT_FRONT);
-  p.push_back(ROT_FRONT_I);
-  p.push_back(ROT_RIGHT);
-  p.push_back(ROT_RIGHT_I);
+  std::vector<Move> p {
+      ROT_UP, ROT_UP_I,
+      ROT_DOWN, ROT_DOWN_I,
+      ROT_FRONT, ROT_FRONT_I,
+      ROT_RIGHT, ROT_RIGHT_I,
+      ROT_LEFT, ROT_LEFT_I
+  };
 
   long seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine e (seed);
@@ -47,16 +47,27 @@ Scrambler::scramble(unsigned length)
           forb1 = ROT_UP;
           forb2 = ROT_UP_I;
         }
+      if (r == ROT_DOWN || r == ROT_DOWN_I)
+        {
+          forb1 = ROT_DOWN;
+          forb2 = ROT_DOWN_I;
+        }
       else if (r == ROT_FRONT || r == ROT_FRONT_I)
         {
           forb1 = ROT_FRONT;
           forb2 = ROT_FRONT_I;
         }
-      else // if (r == ROT_RIGHT)
+      else if (r == ROT_LEFT || r == ROT_LEFT_I)
+        {
+          forb1 = ROT_LEFT;
+          forb2 = ROT_LEFT_I;
+        }
+      else // if (r == ROT_RIGHT || r == ROT_RIGHT_I)
         {
           forb1 = ROT_RIGHT;
           forb2 = ROT_RIGHT_I;
         }
+
       s.push_back(r);
     }
   return s;
