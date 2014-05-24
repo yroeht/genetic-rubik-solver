@@ -1,9 +1,11 @@
 CXX=clang++
-CXXOPTS=-Wall -Wextra -Weverything --std=c++11 -Wno-c++98-compat -ggdb -pthread
+CXXOPTS=-Wall -Wextra -Weverything -Wno-c++98-compat 	\
+	--std=c++11 					\
+	-pthread -O2
 PRG=toy
+CPUS?=0
 
 SOURCE = $(addprefix src/,	\
-	 breeder.cc		\
 	 cube.cc 		\
 	 fitness.cc		\
 	 format.cc 		\
@@ -12,6 +14,8 @@ SOURCE = $(addprefix src/,	\
 	 scrambler.cc 		\
 	 )
 OBJ = $(patsubst %.cc, %.o, $(SOURCE))
+
+all: $(PRG)
 
 $(PRG): $(OBJ)
 	$(CXX) -o $@ $^ $(CXXOPTS)
@@ -26,5 +30,5 @@ mostlyclean:
 	find . -name *.o -delete
 
 %.o: %.cc $(DEPS)
-	$(CXX) -c -o $@ $< $(CXXOPTS) -I src
+	$(CXX) -c -o $@ $< $(CXXOPTS) -I src -DCPUS=$(CPUS)
 

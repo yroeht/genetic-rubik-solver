@@ -1,7 +1,6 @@
 #ifndef TYPES_HH
 # define TYPES_HH
 
-# include <list>
 # include <vector>
 
 enum Color
@@ -30,12 +29,8 @@ enum Move
 
 typedef std::vector<std::vector<Color>> Face;
 
-typedef std::list<Move> Sequence;
+typedef std::vector<Move> Sequence;
 
 typedef unsigned Score;
-
-typedef std::pair<Sequence, Score> Individual;
-
-typedef std::vector<Individual> Population;
 
 #endif /* TYPES_HH */

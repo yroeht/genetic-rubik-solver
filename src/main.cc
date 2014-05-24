@@ -11,73 +11,58 @@
 
 int main()
 {
-  unsigned scramble_length = 10;
-  unsigned solution_length = 10;
+  unsigned scramble_length = 8;
+  unsigned solution_length = 8;
   do {
-      //std::cout << Format::CLEAR;
+      std::cout << Format::CLEAR;
       Cube c;
-      Breeder b(1000, solution_length, c);
-      auto s = Scrambler::scramble(scramble_length);
 
       /* Scramble */
         {
-          std::cout << std::endl
-            << "Scramble (2-GEN): " << s;
-          s = Scrambler::reduce(s);
+          auto scramble = Scrambler::scramble(scramble_length);
+          scramble = Scrambler::reduce(scramble);
+          std::cout << std::endl << "Scramble: " << scramble;
           std::cout << std::endl;
 
-          c.rotate(s);
+          c.rotate(scramble);
 
-          std::cout << "** Applying scramble **"
-            << std::endl
-            << c
-            << std::endl
+          std::cout << "** Applying scramble **" << std::endl
+            << c << std::endl
             << "Fitness: " << Fitness::evaluate(*new Sequence, c)
-            << std::endl
-            << std::endl;
+            << std::endl << std::endl;
         }
 
-      b.initial_populate();
-      b.score();
-
-      unsigned fit = 0;
-      do
+      /* Solve */
+      Sequence best_move;
         {
           double duration;
+          auto generator = [&]() -> Sequence
+            { return Scrambler::scramble(solution_length); };
 
-          b.evolve();
-          /* Scoring */
-            {
-              std::clock_t start = std::clock();
-              b.score();
-              duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-            }
+          auto scorer = [c](Sequence s) -> unsigned
+            { return Fitness::evaluate(s, c); };
 
-          Cube c2(c);
-          c2.rotate(b.best_move());
+          PrintableBreeder<Sequence, unsigned> b(generator, scorer,
+                                                 20000, 1.0);
 
-          if (b.iteration % 10 == 0 || fit == 48)
-            {
-             // std::cout << Format::CLEAR;
-              std::cout << std::endl
-                << "Scramble (2-GEN): " << s
-                << std::endl
-                << "Fitness: " << Fitness::evaluate(*new Sequence, c) * 100 / 48 << "%"
-                << std::endl
-                << c
-                << std::endl;
+          std::clock_t start = std::clock();
+          best_move = b.pick(100, 48, std::cout);
+          duration = (std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-              fit = Fitness::evaluate(b.best_move(), c);
+          std::cout << "best move: " << best_move << std::endl;
+          std::cout << "operation length: " << duration << std::endl;
+        }
 
-              b.dump(std::cout);
-              std::cout
-                << "Scoring duration: " << duration
-                << std::endl
-                << "Applying best solution results in:" << std::endl
-                << c2;
-            }
-        } while (fit < 48);
-      b.stop_workers();
-  } while (std::cin.ignore());
+      /* Show */
+        {
+          auto bak = c;
+          //c.rotate(best_move);
+          std::cout << "** Applying best sequence **" << std::endl
+            << c << std::endl
+            << "Fitness: " << Fitness::evaluate(*new Sequence, c) << std::endl
+            << "Fitness: " << Fitness::evaluate(best_move, bak) << " "<< best_move
+            << std::endl << std::endl;
+        }
+  } while (false);
 }
 

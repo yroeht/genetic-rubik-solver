@@ -89,16 +89,3 @@ std::ostream& operator<<(std::ostream& os, const Move m)
     }
   return os;
 }
-
-void Breeder::dump(std::ostream& os)
-{
-  auto first = population.front();
-  os << "Breeder iteration " << iteration
-    << ", population count " << population.size()
-    << ", average fitness " << average() * 100 / 48 << "%"
-    << "."
-    << std::endl;
-  os << "Fittest individual is " << Scrambler::reduce(first.first)
-    << ", scored " << first.second * 100 / 48 << "%"
-    << std::endl;
-}
