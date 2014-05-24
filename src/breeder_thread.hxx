@@ -30,7 +30,7 @@ Breeder<C, F>::start_workers()
                 break;
             }
           /* Do the CPU heavy work (score the assigned population range). */
-          std::for_each(lower_bound, higher_bound, [&] (Individual<C, F> i)
+          std::for_each(lower_bound, higher_bound, [&] (Individual<C, F>& i)
                         { i.second = scorer(i.first); });
 
           /* Let it be known that the work is now done. */

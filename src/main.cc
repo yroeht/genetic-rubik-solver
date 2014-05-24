@@ -11,8 +11,8 @@
 
 int main()
 {
-  unsigned scramble_length = 8;
-  unsigned solution_length = 8;
+  unsigned scramble_length = 10;
+  unsigned solution_length = 10;
   do {
       std::cout << Format::CLEAR;
       Cube c;
@@ -39,14 +39,14 @@ int main()
           auto generator = [&]() -> Sequence
             { return Scrambler::scramble(solution_length); };
 
-          auto scorer = [c](Sequence s) -> unsigned
-            { return Fitness::evaluate(s, c); };
+          auto scorer = [c](const Sequence s) -> unsigned
+            { static Cube cc (c); return Fitness::evaluate(s, cc); };
 
           PrintableBreeder<Sequence, unsigned> b(generator, scorer,
-                                                 20000, 1.0);
+                                                 200000, 1.0);
 
           std::clock_t start = std::clock();
-          best_move = b.pick(100, 48, std::cout);
+          best_move = b.pick(300, 48, std::cout);
           duration = (std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
           std::cout << "best move: " << best_move << std::endl;
@@ -55,12 +55,11 @@ int main()
 
       /* Show */
         {
-          auto bak = c;
-          //c.rotate(best_move);
+          auto bak(c);
+          c.rotate(best_move);
           std::cout << "** Applying best sequence **" << std::endl
             << c << std::endl
             << "Fitness: " << Fitness::evaluate(*new Sequence, c) << std::endl
-            << "Fitness: " << Fitness::evaluate(best_move, bak) << " "<< best_move
             << std::endl << std::endl;
         }
   } while (false);
