@@ -14,7 +14,7 @@ namespace Format
 
 namespace Fitness
 {
-  Score evaluate(const Sequence seq, const Cube cu);
+  Score evaluate(const Sequence seq, const Cube& cu);
 }
 
 class Cube
@@ -26,6 +26,7 @@ private:
 
 public:
   Cube();
+  Cube(const Cube& other);
 
 public:
   void rotate(Move m);
@@ -35,7 +36,7 @@ public:
   void show_face(std::ostream& os, Side s);
   friend std::ostream& operator<<(std::ostream& os, const Cube c);
   friend std::string Format::CubePrinter3D(const Cube c);
-  friend Score Fitness::evaluate(const Sequence seq, const Cube cu);
+  friend Score Fitness::evaluate(const Sequence seq, const Cube& cu);
 };
 
 #endif /* CUBE_HH */

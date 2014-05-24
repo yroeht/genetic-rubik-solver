@@ -6,7 +6,7 @@
 
 namespace Fitness
 {
-  Score evaluate(const Sequence seq, Cube cu);
+  Score evaluate(const Sequence seq, const Cube& cu);
 }
 
 #endif /* FITNESS_HH */

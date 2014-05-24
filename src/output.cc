@@ -51,14 +51,14 @@ std::ostream& operator<<(std::ostream& os, const Face f)
 std::ostream& operator<<(std::ostream& os, const Cube cu)
 {
 #if 1
-  os << Format::CubePrinter3D(cu);
+  os << Format::CubePrinter3D(cu) << std::endl;
 #else // Noobish display
-  os << "Top face:"     << std::endl << cu.top      << std::endl;
   os << "Bottom face:"  << std::endl << cu.bottom   << std::endl;
   os << "Left face:"    << std::endl << cu.left     << std::endl;
+  os << "Back face:"    << std::endl << cu.back     << std::endl;
+  os << "Top face:"     << std::endl << cu.top      << std::endl;
   os << "Right face:"   << std::endl << cu.right    << std::endl;
   os << "Front face:"   << std::endl << cu.front    << std::endl;
-  os << "Back face:"    << std::endl << cu.back     << std::endl;
 #endif
   return os;
 }
