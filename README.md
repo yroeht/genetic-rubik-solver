@@ -1,7 +1,7 @@
 magpie
 ======
 
-# A magic cube scrambler and solver
+### A magic cube scrambler and solver
 
 Generates random scrambles for the cube:
 
