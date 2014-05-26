@@ -7,7 +7,8 @@
 namespace Format
 {
   static const char* DEFAULT = "\033[0m";
-  static const char* CLEAR = "\x1B[2J";   // tput clear
+  static const char* CLEAR = "\033[J";             // tput ed
+  static const char* CLEAR_LINE = "\033[A\033[K";  // tput cuui + el
 
   /*
   ** 88/256 Colors: http://misc.flogisoft.com/bash/tip_colors_and_formatting

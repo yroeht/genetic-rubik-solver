@@ -1,5 +1,6 @@
 # include <algorithm>
 # include <cassert>
+# include <format.hh>
 
 using std::chrono::system_clock;
 
@@ -142,6 +143,7 @@ PrintableBreeder<Chromosome, F>::pick(unsigned max_generations, F max_score,
   for (unsigned generations = 0; generations < max_generations; ++generations)
     {
       this->evolve();
+      os << Format::CLEAR_LINE;
       os << "Generation " << generations << ", best=";
       os << this->population.front().first;
       os << " score=" << this->population.front().second << std::endl;
