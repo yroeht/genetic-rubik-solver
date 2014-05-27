@@ -36,14 +36,14 @@ Scrambler::scramble(unsigned length)
 
   Sequence s;
   Move r = ROT_UP;
+  Move forbidden = ROT_UP;
   while (s.size() < length)
     {
-      /* Forbid repeating or canceling the previous move. This implies the
-      ** generated sequences will always be in a canonical form, and calling
-      ** Scrambler::reduce should be useless. */
-      Move forbidden = ROT_UP;
       do {
           r = p[rnd()];
+          /* Forbid repeating or canceling the previous move. This implies the
+          ** generated sequences will always be in a canonical form, and calling
+          ** Scrambler::reduce should be useless. */
       } while (r == forbidden || r == invert(forbidden));
       forbidden = r;
       s.push_back(r);
@@ -64,7 +64,7 @@ Scrambler::reduce(const Sequence s)
       else
         {
           auto last = ret.back();
-          if (static_cast<int>(last) == static_cast<int>(invert(rotation)))
+          if (last == invert(rotation))
             /* The previous rotation is cancelled by the current one, so cancel
             ** that previous one and go on. */
             ret.pop_back();
