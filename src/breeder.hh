@@ -6,7 +6,6 @@
 # include <functional>
 # include <iterator>
 # include <mutex>
-# include <ostream>
 # include <random>
 # include <thread>
 # include <vector>
@@ -28,6 +27,9 @@ using Generator = std::function<Chromosome()>;
 
 template<typename Chromosome, typename Fitness>
 using Scorer = std::function<Fitness(Chromosome)>;
+
+template<typename Chromosome, typename Fitness>
+using Printer = std::function<void(Chromosome, Fitness, unsigned)>;
 
 /* An implementation of a generic genetic algorithm. */
 template<typename Chromosome, typename Fitness>
@@ -84,8 +86,9 @@ class PrintableBreeder : public Breeder<Chromosome, Fitness>
 public:
   using Breeder<Chromosome, Fitness>::Breeder;
   using Breeder<Chromosome, Fitness>::pick;
-  Chromosome                          pick(unsigned generations, Fitness score,
-                                           std::ostream& os);
+  Chromosome                          pick(unsigned generations,
+                                           Fitness target_score,
+                                           Printer<Chromosome, Fitness>);
 };
 
 # include <breeder.hxx>

@@ -42,11 +42,20 @@ int main()
           auto scorer = [c](const Sequence s) -> unsigned
             { return Fitness::evaluate(s, c); };
 
+          auto printer = [&](const Sequence best,
+                             const unsigned score,
+                             const unsigned generation) -> void
+            {
+              std::cout << Format::CLEAR_LINE
+                        << "Generation " << generation << ", best=" << best
+                        << " score=" << score << std::endl;
+            };
+
           PrintableBreeder<Sequence, unsigned> b(generator, scorer,
                                                  200000, 1.0);
 
           std::clock_t start = std::clock();
-          best_move = b.pick(300, 48, std::cout);
+          best_move = b.pick(300, 48, printer);
           duration = (std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
           std::cout << "best move: " << best_move << std::endl;
