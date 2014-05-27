@@ -1,6 +1,5 @@
 # include <algorithm>
 # include <cassert>
-# include <format.hh>
 
 using std::chrono::system_clock;
 
