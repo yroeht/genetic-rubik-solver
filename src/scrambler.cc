@@ -36,38 +36,16 @@ Scrambler::scramble(unsigned length)
 
   Sequence s;
   Move r = ROT_UP;
-  Move forb1 = ROT_UP, forb2 = ROT_UP;
   while (s.size() < length)
     {
+      /* Forbid repeating or canceling the previous move. This implies the
+      ** generated sequences will always be in a canonical form, and calling
+      ** Scrambler::reduce should be useless. */
+      Move forbidden = ROT_UP;
       do {
           r = p[rnd()];
-      } while (r == forb1 || r == forb2);
-      if (r == ROT_UP || r == ROT_UP_I)
-        {
-          forb1 = ROT_UP;
-          forb2 = ROT_UP_I;
-        }
-      if (r == ROT_DOWN || r == ROT_DOWN_I)
-        {
-          forb1 = ROT_DOWN;
-          forb2 = ROT_DOWN_I;
-        }
-      else if (r == ROT_FRONT || r == ROT_FRONT_I)
-        {
-          forb1 = ROT_FRONT;
-          forb2 = ROT_FRONT_I;
-        }
-      else if (r == ROT_LEFT || r == ROT_LEFT_I)
-        {
-          forb1 = ROT_LEFT;
-          forb2 = ROT_LEFT_I;
-        }
-      else // if (r == ROT_RIGHT || r == ROT_RIGHT_I)
-        {
-          forb1 = ROT_RIGHT;
-          forb2 = ROT_RIGHT_I;
-        }
-
+      } while (r == forbidden || r == invert(forbidden));
+      forbidden = r;
       s.push_back(r);
     }
   return s;
