@@ -35,7 +35,6 @@ int main()
       /* Solve */
       Sequence best_move;
         {
-          double duration;
           auto generator = [&]() -> Sequence
             { return Scrambler::scramble(solution_length); };
 
@@ -54,12 +53,9 @@ int main()
           PrintableBreeder<Sequence, unsigned> b(generator, scorer,
                                                  200000, 1.0);
 
-          std::clock_t start = std::clock();
           best_move = b.pick(300, 48, printer);
-          duration = (std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
           std::cout << "best move: " << best_move << std::endl;
-          std::cout << "operation length: " << duration << std::endl;
         }
 
       /* Show */
