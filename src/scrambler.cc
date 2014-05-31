@@ -25,6 +25,7 @@ Scrambler::scramble(unsigned length)
       ROT_UP, ROT_UP_I,
       ROT_DOWN, ROT_DOWN_I,
       ROT_FRONT, ROT_FRONT_I,
+      ROT_BACK, ROT_BACK_I,
       ROT_RIGHT, ROT_RIGHT_I,
       ROT_LEFT, ROT_LEFT_I
   };
