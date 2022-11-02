@@ -1,5 +1,5 @@
-magpie
-======
+Rubik's genetic solver
+======================
 
 ### A magic cube scrambler and solver
 
